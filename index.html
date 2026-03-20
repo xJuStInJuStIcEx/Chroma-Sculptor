@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Chroma">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23222'/%3E%3Crect x='128' y='128' width='128' height='128' fill='%23FF3333'/%3E%3Crect x='256' y='128' width='128' height='128' fill='%2333FF33'/%3E%3Crect x='128' y='256' width='128' height='128' fill='%233333FF'/%3E%3Crect x='256' y='256' width='128' height='128' fill='%23FFFF33'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23222'/%3E%3Crect x='128' y='128' width='128' height='128' fill='%23FF3333'/%3E%3Crect x='256' y='128' width='128' height='128' fill='%23FFFF33'/%3E%3Crect x='128' y='256' width='128' height='128' fill='%2333FF33'/%3E%3Crect x='256' y='256' width='128' height='128' fill='%233333FF'/%3E%3C/svg%3E">
     <link id="manifest-link" rel="manifest" href="">
     <meta name="theme-color" content="#111111">
 
@@ -34,14 +34,9 @@
         #start-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            
-            /* ISTRUZIONE GRAFICA: 
-               Per mettere la tua immagine di sfondo, cancella il colore #111 e scrivi:
-               background: url('nome-della-tua-immagine-splash.jpg') center/cover no-repeat; 
-            */
             background: url('STARTGAME.png') center/cover no-repeat;
-            
-            z-index: 50; /* Sta sopra a tutto */
+            background-color: #111; /* Fallback se l'immagine non carica subito */
+            z-index: 50;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -49,31 +44,19 @@
         }
 
         #start-screen h1 {
-            font-size: 38px;
-            text-align: center;
-            text-shadow: 2px 2px 5px #000;
-            margin-bottom: 50px;
-            display: none;
-            /* Se la tua immagine ha già il titolo disegnato sopra, puoi nascondere questo testo scrivendo: display: none; */
+            display: none; /* Nascosto perché c'è già la tua grafica nell'immagine */
         }
 
         #btn-start-game {
-            background: #28a745;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            padding: 20px 40px;
-            border: 3px solid #fff;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(40, 167, 69, 0.8);
-            cursor: pointer;
-            /* ISTRUZIONE GRAFICA BOTTONE START: 
-               Se hai un bottone grafico, scrivi:
-               background: url('tuo-bottone-start.png') center/contain no-repeat;
-               color: transparent; border: none; box-shadow: none;
-            */
+            width: 250px;
+            height: 80px;
             background: url('START-BTN.png') center/contain no-repeat;
-            color: transparent; border: none; box-shadow: none;
+            background-color: transparent;
+            color: transparent; 
+            border: none; 
+            box-shadow: none;
+            cursor: pointer;
+            margin-top: 150px; /* Sposta il bottone un po' più in basso rispetto al centro se serve */
         }
         #btn-start-game:active { transform: scale(0.95); }
 
@@ -86,7 +69,7 @@
             background: #222;
             border: 2px solid #555;
             box-sizing: border-box;
-            display: none; /* Nascosto finché non si preme Start */
+            display: none;
         }
         canvas {
             width: 100%; height: 100%; display: block; cursor: pointer;
@@ -100,83 +83,99 @@
         /* --- CONTROLLI IN BASSO --- */
         #controls-container {
             width: 100%; max-width: 600px; height: 28vh;
-            display: none; /* Nascosto finché non si preme Start */
+            display: none; 
             flex-direction: column; justify-content: space-evenly;
             padding: 5px; box-sizing: border-box;
         }
+
+        /* --- NUOVA BARRA COLORI (CONTENITORE) --- */
         #palette-container {
-            display: flex; justify-content: center; align-items: center; gap: 15px;
-            background: #222; padding: 8px; border-radius: 20px; margin: 0 auto;
-        }
-        .color-swatch {
-            width: 22px; height: 22px; border-radius: 50%; border: 2px solid #444; transition: all 0.2s;
-        }
-        .color-swatch.active { border: 3px solid #fff; transform: scale(1.4); box-shadow: 0 0 10px rgba(255,255,255,0.8); }
-        
-        .control-row {
-            display: flex; justify-content: space-between; width: 100%; gap: 5px; padding: 0 5px; box-sizing: border-box;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 15px; /* Spazio tra i vari colori */
+            background: url('COLOR-BAR.png') center/contain no-repeat;
+            background-color: transparent;
+            padding: 15px 20px; /* Spazio interno per non far uscire i bottoni dalla barra */
+            margin: 0 auto;
+            width: 90%; 
+            max-width: 400px;
         }
 
-        /* STILE BASE DEI BOTTONI */
+        /* --- SINGOLI PULSANTI COLORE --- */
+        .color-swatch {
+            width: 45px; /* Dimensione dei pallini colore */
+            height: 45px; 
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: transform 0.1s;
+        }
+        .color-swatch:active { transform: scale(0.9); }
+        
+        .control-row {
+            display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 5px; padding: 0 5px; box-sizing: border-box;
+        }
+
+        /* --- STILE BASE DEI BOTTONI DI GIOCO --- */
         button.game-btn {
-            background: #444; color: white; border: none; padding: 12px 5px;
-            font-size: 14px; font-weight: bold; border-radius: 6px; flex: 1;
-            cursor: pointer; touch-action: manipulation;
-            
-            /* ISTRUZIONI GRAFICA BOTTONI UX:
-               Per usare le tue immagini sui bottoni di gioco, aggiungi l'immagine a ogni ID specifico qui sotto,
-               e imposta "color: transparent" se non vuoi vedere il testo scritto sopra.
-            */
             background-size: contain; 
             background-position: center; 
             background-repeat: no-repeat;
+            background-color: transparent;
+            color: transparent;
+            border: none;
+            flex: 1;
+            cursor: pointer; touch-action: manipulation;
         }
         button.game-btn:active { transform: scale(0.95); filter: brightness(0.8); }
         
-        /* ISTRUZIONI: Inserisci le tue immagini qui */
+        /* ISTRUZIONI: Bottoni personalizzati */
         #btn-left { 
             background-image: url('LEFT-BTN.jpg'); 
-            color: transparent; 
-            background-color: transparent; /* Nasconde il grigio del bottone */
-            border: none; /* Toglie i bordi */
-            height: 50px; /* <--- MODIFICA QUESTO NUMERO PER INGRANDIRE/RIMPICCIOLIRE */
+            height: 50px; 
         }
         
         #btn-right { 
             background-image: url('RIGHT-BTN.jpg'); 
-            color: transparent; 
-            background-color: transparent;
-            border: none;
-            height: 50px; /* <--- MODIFICA QUESTO NUMERO */
+            height: 50px; 
         }
         
+        /* PULSANTE CICLO: Disabilitato temporaneamente per la futura funzione */
         #btn-cycle { 
             background-image: url('COLOR-BTN.jpg'); 
-            color: transparent; 
-            background-color: transparent;
-            border: none;
-            height: 50px; /* <--- MODIFICA QUESTO NUMERO */
+            height: 50px; 
+            opacity: 0.5; /* Lo rende semi-trasparente per far capire che è inattivo */
+            pointer-events: none; /* Impedisce che venga cliccato */
         }
         
         #btn-fire-color { 
             background-image: url('FIRE-BTN.png'); 
-            color: transparent; 
-            background-color: transparent;
-            border: none;
-            height: 50px; /* <--- MODIFICA QUESTO NUMERO */
+            height: 50px; 
         }
         
         #btn-fire-white { 
             background-image: url('LASER-BTN.png'); 
-            color: transparent; 
-            background-color: transparent;
-            border: none;
-            height: 50px; /* <--- MODIFICA QUESTO NUMERO */
+            height: 50px; 
         }
+
+        /* --- SCHERMATA GAME OVER --- */
         #game-over {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); display: none; flex-direction: column; */
-            align-items: center; justify-content: center; font-size: 36px; z-index: 10; text-align: center;
+            background: rgba(0,0,0,0.85); /* Sfondo scuro per far risaltare il logo */
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 10; text-align: center;
+        }
+        /* Logo personalizzato Game Over */
+        #game-over-logo {
+            width: 80%;
+            height: 100px;
+            background: url('GAMEOVER.png') center/contain no-repeat;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -184,8 +183,8 @@
 
     <!-- SCHERMATA DI AVVIO -->
     <div id="start-screen">
-        ​<div style="position: absolute; top: 10px; left: 10px; color: yellow; z-index: 100; font-size: 16px;">controlla pulsanti fuoco+laser e Gameover</div>
-<!--      <h1>CHROMA SCULPTOR</h1> -->
+        <div style="position: absolute; top: 10px; left: 10px; color: yellow; z-index: 100; font-size: 16px;">Test Aggiornamento Colori Diretti 1</div>
+        <h1>CHROMA SCULPTOR</h1> 
         <button id="btn-start-game">START GAME!</button>
     </div>
 
@@ -197,21 +196,22 @@
             <div>Time: <span id="time-display">0</span>s</div>
         </div>
         <div id="game-over">
-            background-image: url('GAMEOVER.png') center/contain no-repeat;
-            color: transparent; border: none; box-shadow: none;
-            <div>GAME OVER</div>
-            <div style="font-size: 20px; margin-top: 10px;">Punteggio Finale: <span id="final-score">0</span></div>
-            <button class="game-btn" onclick="location.reload()" style="margin-top: 20px; flex: none; padding: 15px 30px; font-size: 18px;">Riprova</button>
+            <!-- Qui viene caricata la tua immagine GAMEOVER.png dal CSS -->
+            <div id="game-over-logo"></div>
+            
+            <div style="font-size: 20px; margin-top: 10px; color: white; text-shadow: 2px 2px 4px #000;">Punteggio Finale: <span id="final-score">0</span></div>
+            <button onclick="location.reload()" style="margin-top: 20px; flex: none; padding: 15px 30px; font-size: 18px; font-weight: bold; background-color: #d32f2f; color: white; border: 2px solid #fff; border-radius: 10px; cursor: pointer;">Riprova</button>
         </div>
     </div>
 
     <!-- CONTROLLI -->
     <div id="controls-container">
+        <!-- Contenitore della barra colori: i pulsantini vengono generati dal JavaScript qui dentro -->
         <div id="palette-container"></div>
 
         <div class="control-row">
             <button id="btn-left" class="game-btn">⬅️ SX</button>
-            <button id="btn-cycle" class="game-btn">🔄 Colore</button>
+            <button id="btn-cycle" class="game-btn">🔄 Colore (Disabilitato)</button>
             <button id="btn-right" class="game-btn">DX ➡️</button>
         </div>
         <div class="control-row">
@@ -224,13 +224,13 @@
 /**
  * INIZIALIZZAZIONE PWA (FULLSCREEN NATIVO)
  */
-const svgIcon = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23222'/%3E%3Crect x='128' y='128' width='128' height='128' fill='%23FF3333'/%3E%3Crect x='256' y='128' width='128' height='128' fill='%2333FF33'/%3E%3Crect x='128' y='256' width='128' height='128' fill='%233333FF'/%3E%3Crect x='256' y='256' width='128' height='128' fill='%23FFFF33'/%3E%3C/svg%3E";
+const svgIcon = "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%23222'/%3E%3Crect x='128' y='128' width='128' height='128' fill='%23FF3333'/%3E%3Crect x='256' y='128' width='128' height='128' fill='%23FFFF33'/%3E%3Crect x='128' y='256' width='128' height='128' fill='%2333FF33'/%3E%3Crect x='256' y='256' width='128' height='128' fill='%233333FF'/%3E%3C/svg%3E";
 
 const manifestData = {
     name: "Chroma Sculptor",
     short_name: "Chroma",
     start_url: ".",
-    display: "fullscreen", /* Impostato su fullscreen per la PWA */
+    display: "fullscreen", 
     background_color: "#111111",
     theme_color: "#111111",
     icons: [{ src: svgIcon, sizes: "512x512", type: "image/svg+xml", purpose: "any maskable" }]
@@ -261,30 +261,23 @@ const btnStartGame = document.getElementById('btn-start-game');
 
 let gameStarted = false;
 
-// Funzione per forzare il Fullscreen del Browser (Android/PC)
 function requestFullScreen() {
     let elem = document.documentElement;
     if (elem.requestFullscreen) {
         elem.requestFullscreen().catch(err => console.log("Fullscreen negato:", err));
-    } else if (elem.webkitRequestFullscreen) { /* Safari/iOS iPad */
+    } else if (elem.webkitRequestFullscreen) { 
         elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { /* IE11 */
+    } else if (elem.msRequestFullscreen) { 
         elem.msRequestFullscreen();
     }
 }
 
 btnStartGame.addEventListener('click', () => {
-    // 1. Richiedi Fullscreen
     requestFullScreen();
-    
-    // 2. Nascondi lo splash screen
     startScreen.style.display = 'none';
-    
-    // 3. Mostra i contenitori di gioco
     gameContainer.style.display = 'block';
     controlsContainer.style.display = 'flex';
     
-    // 4. Avvia il motore di gioco
     if (!gameStarted) {
         gameStarted = true;
         lastTime = performance.now();
@@ -292,9 +285,8 @@ btnStartGame.addEventListener('click', () => {
     }
 });
 
-
 /**
- * CORE DEL GIOCO
+ * CORE DEL GIOCO E LOGICA COLORI
  */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -304,18 +296,16 @@ const GAME_HEIGHT = 1960;
 const COLS = 16; 
 const BLOCK_SIZE = GAME_WIDTH / COLS;
 
-// ISTRUZIONE GRAFICA: Puoi sostituire questi codici esadecimali (#FF3333) con i colori esatti della tua palette grafica!
-const COLORS = ['#FF3333', '#33FF33', '#3333FF', '#FFFF33']; 
+// NUOVO ORDINE COLORI: Rosso, Giallo, Verde, Blu
+const COLORS = ['#FF3333', '#FFFF33', '#33FF33', '#3333FF']; 
 const MAX_PIECES = 3; 
 
-const TETROMINOES = [
-    [{x:0,y:0}, {x:1,y:0}, {x:2,y:0}, {x:3,y:0}], // I
-    [{x:0,y:0}, {x:1,y:0}, {x:0,y:1}, {x:1,y:1}], // O
-    [{x:1,y:0}, {x:0,y:1}, {x:1,y:1}, {x:2,y:1}], // T
-    [{x:1,y:0}, {x:1,y:1}, {x:1,y:2}, {x:0,y:2}], // J
-    [{x:0,y:0}, {x:0,y:1}, {x:0,y:2}, {x:1,y:2}], // L
-    [{x:1,y:0}, {x:2,y:0}, {x:0,y:1}, {x:1,y:1}], // S
-    [{x:0,y:0}, {x:1,y:0}, {x:1,y:1}, {x:2,y:1}]  // Z
+// Mappatura delle tue immagini per i colori Accesi / Spenti
+const COLOR_SPRITES = [
+    { on: 'RED-ON.png', off: 'RED-OFF.png' },       // Indice 0: Rosso
+    { on: 'YELLOW-ON.png', off: 'YELLOW-OFF.png' }, // Indice 1: Giallo
+    { on: 'GREEN-ON.png', off: 'GREEN-OFF.png' },   // Indice 2: Verde
+    { on: 'BLUE-ON.png', off: 'BLUE-OFF.png' }      // Indice 3: Blu
 ];
 
 let state = {
@@ -327,7 +317,7 @@ let state = {
     isGameOver: false,
     player: {
         col: Math.floor(COLS / 2),
-        selectedColorIndex: 0
+        selectedColorIndex: 0 // Il colore iniziale è il Rosso (Indice 0)
     }
 };
 
@@ -339,25 +329,41 @@ const uiTime = document.getElementById('time-display');
 const gameOverScreen = document.getElementById('game-over');
 const finalScoreDisplay = document.getElementById('final-score');
 const paletteContainer = document.getElementById('palette-container');
-const btnFireColor = document.getElementById('btn-fire-color');
 
+// FUNZIONE AGGIORNATA: Selezione diretta tramite i tuoi Sprite
 function renderPalette() {
     paletteContainer.innerHTML = '';
+    
     COLORS.forEach((color, index) => {
         let swatch = document.createElement('div');
         swatch.className = 'color-swatch';
-        if (index === state.player.selectedColorIndex) swatch.classList.add('active');
-        swatch.style.backgroundColor = color;
+        
+        // Se è il colore selezionato mostra l'immagine ON, altrimenti l'immagine OFF
+        let imgSrc = (index === state.player.selectedColorIndex) ? COLOR_SPRITES[index].on : COLOR_SPRITES[index].off;
+        swatch.style.backgroundImage = `url('${imgSrc}')`;
+        
+        // Listener per il tocco: cambia direttamente il colore e aggiorna
+        swatch.addEventListener('pointerdown', (e) => {
+            e.preventDefault();
+            state.player.selectedColorIndex = index;
+            renderPalette(); // Aggiorna visivamente tutti i bottoncini
+        });
+        
         paletteContainer.appendChild(swatch);
     });
-    
-    // Aggiornamento dinamico del bottone "Spara Colore"
-    // Se usi una tua grafica fissa, puoi commentare le 3 righe qui sotto!
-    btnFireColor.style.backgroundColor = COLORS[state.player.selectedColorIndex];
-    btnFireColor.style.borderColor = '#fff';
-    btnFireColor.style.color = (COLORS[state.player.selectedColorIndex] === '#FFFF33') ? '#000' : '#fff'; 
 }
+// Avvia la renderizzazione iniziale della barra
 renderPalette();
+
+const TETROMINOES = [
+    [{x:0,y:0}, {x:1,y:0}, {x:2,y:0}, {x:3,y:0}], // I
+    [{x:0,y:0}, {x:1,y:0}, {x:0,y:1}, {x:1,y:1}], // O
+    [{x:1,y:0}, {x:0,y:1}, {x:1,y:1}, {x:2,y:1}], // T
+    [{x:1,y:0}, {x:1,y:1}, {x:1,y:2}, {x:0,y:2}], // J
+    [{x:0,y:0}, {x:0,y:1}, {x:0,y:2}, {x:1,y:2}], // L
+    [{x:1,y:0}, {x:2,y:0}, {x:0,y:1}, {x:1,y:1}], // S
+    [{x:0,y:0}, {x:1,y:0}, {x:1,y:1}, {x:2,y:1}]  // Z
+];
 
 class Piece {
     constructor(blocks, pixelX, pixelY) {
@@ -487,7 +493,6 @@ canvas.addEventListener('pointerdown', (e) => {
         if (clicked) { rotatePiece(i); break; }
     }
 });
-
 
 function findLargestColorRectangle(piece) {
     let bestRect = null;
@@ -661,7 +666,6 @@ function update(dt) {
         state.isGameOver = true;
         finalScoreDisplay.innerText = state.score;
         gameOverScreen.style.display = 'flex';
-        // Forza l'uscita dal fullscreen se in game over (Opzionale)
         if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
         return;
     }
@@ -693,11 +697,6 @@ function draw() {
 
     let cannonY = GAME_HEIGHT - floorHeightPx - BLOCK_SIZE;
     
-    // ISTRUZIONE GRAFICA CANNONE: 
-    // Se hai un'immagine per il cannone puoi disegnarla sul canvas usando: 
-    // const cannonImg = new Image(); cannonImg.src = 'tuo-cannone.png';
-    // ctx.drawImage(cannonImg, cannonX, cannonY, BLOCK_SIZE, BLOCK_SIZE);
-    // (Al momento c'è il triangolo grigio predefinito qui sotto)
     ctx.fillStyle = '#AAA';
     ctx.beginPath();
     ctx.moveTo(cannonX, cannonY + BLOCK_SIZE);
@@ -732,7 +731,7 @@ function draw() {
 }
 
 function loop(timestamp) {
-    if (!gameStarted) return; // Non avviare la logica finché non premi Start
+    if (!gameStarted) return;
     
     let dt = (timestamp - lastTime) / 1000;
     lastTime = timestamp;
@@ -748,8 +747,8 @@ function loop(timestamp) {
 
 function moveLeft() { if(state.player.col > 0) state.player.col--; }
 function moveRight() { if(state.player.col < COLS - 1) state.player.col++; }
-function cycleColor() { state.player.selectedColorIndex = (state.player.selectedColorIndex + 1) % COLORS.length; renderPalette(); }
 
+// Eventi pressione prolungata (Sinistra/Destra)
 function addHoldListener(btnId, action) {
     let btn = document.getElementById(btnId);
     let intervalId = null;
@@ -765,19 +764,23 @@ function addHoldListener(btnId, action) {
 addHoldListener('btn-left', moveLeft);
 addHoldListener('btn-right', moveRight);
 
-document.getElementById('btn-cycle').addEventListener('click', cycleColor);
+// Eventi Fuoco
 document.getElementById('btn-fire-color').addEventListener('pointerdown', (e) => { e.preventDefault(); shoot('color'); });
 document.getElementById('btn-fire-white').addEventListener('pointerdown', (e) => { e.preventDefault(); shoot('white'); });
 
+// Eventi Tastiera per PC
 window.addEventListener('keydown', (e) => {
     if(e.code === 'ArrowLeft') moveLeft();
     if(e.code === 'ArrowRight') moveRight();
-    if(e.code === 'ArrowUp' || e.code === 'KeyC') cycleColor();
     if(e.code === 'Space') shoot('color');
     if(e.code === 'ShiftLeft' || e.code === 'ShiftRight') shoot('white');
+    
+    // Tasti 1-4 per testare su PC la selezione rapida dei colori
+    if(e.code === 'Digit1') { state.player.selectedColorIndex = 0; renderPalette(); }
+    if(e.code === 'Digit2') { state.player.selectedColorIndex = 1; renderPalette(); }
+    if(e.code === 'Digit3') { state.player.selectedColorIndex = 2; renderPalette(); }
+    if(e.code === 'Digit4') { state.player.selectedColorIndex = 3; renderPalette(); }
 });
-
-// Non invochiamo più il loop qui in fondo. Il loop si avvia dal click sul bottone "START GAME!".
 
 </script>
 </body>
